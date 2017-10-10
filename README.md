@@ -1,5 +1,7 @@
 # Bouygues SMS
 
+[![Build Status](https://travis-ci.org/tomsquest/bouyguessms.svg?branch=master)](https://travis-ci.org/tomsquest/bouyguessms)
+
 Send up to 5 free SMS per day using Bouygues Telecom unofficial API.  
 The program is released as a standalone binary and it can also be used as a GO library.  
 The code is written in Golang.  
