@@ -1,0 +1,23 @@
+builds:
+  -
+    main: ./cmd/bouyguessms/main.go
+    goos:
+    - darwin
+    - freebsd
+    - linux
+    - netbsd
+    - openbsd
+    - windows
+    goarch:
+    - 386
+    - arm
+    - amd64
+    goarm:
+    - 6
+    - 7
+    env:
+    - CGO_ENABLED=0
+release:
+  # If set to true, will not auto-publish the release.
+  # Default is false.
+  draft: true
