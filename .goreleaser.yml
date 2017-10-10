@@ -10,8 +10,9 @@ builds:
     - windows
     goarch:
     - 386
-    - arm
     - amd64
+    - arm
+    - arm64
     goarm:
     - 6
     - 7
