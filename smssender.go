@@ -85,7 +85,7 @@ func (sender *smsSender) confirmMessage() error {
 		return err
 	}
 
-	if !strings.Contains(body, "Votre message a bien été envoyé au numéro") {
+	if !strings.Contains(body, "Votre message a bien été envoyé") {
 		return errors.Errorf("unable to confirm message sending (last step results in unattented message). Body: %s", body)
 	}
 
