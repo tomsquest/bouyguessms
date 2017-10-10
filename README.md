@@ -33,6 +33,10 @@ if err != nil {
 log.Printf("SMS sent. Quota left: %d.\n", quota)
 ```
 
+## Download/Release
+
+Download binaries from the [Release page](https://github.com/tomsquest/bouyguessms/releases).
+
 ## Inspiration
 
 Original code from [Y3nd](https://github.com/y3nd)'s [bouygues-sms](https://github.com/y3nd/bouygues-sms) written in Javascript. Thanks!
