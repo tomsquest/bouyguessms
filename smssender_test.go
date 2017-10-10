@@ -8,7 +8,7 @@ import (
 
 func TestSmsSender_SendSms_ok(t *testing.T) {
 	client := &FakeClient{
-		bodies: []string{">Validation< ... >3 SMS gratuits", "Votre message a bien été envoyé au numéro"},
+		bodies: []string{">Validation< ... >3 SMS gratuits", "Votre message a bien été envoyé au numéro. 2 messages gratuits"},
 		errors: []error{nil, nil},
 	}
 	sender := smsSender{client, NewFakeQuotaGetter(99, nil)}
@@ -16,7 +16,7 @@ func TestSmsSender_SendSms_ok(t *testing.T) {
 	quota, err := sender.SendSms("msg", PhoneNumbers{PhoneNumber("0601020304")})
 
 	require.NoError(t, err)
-	require.EqualValues(t, 3, quota)
+	require.EqualValues(t, 2, quota)
 
 	msgPosted := false
 	for _, val := range client.postValues {
@@ -99,4 +99,16 @@ func TestSmsSender_SendSms_failure_during_confirmation(t *testing.T) {
 	_, err := sender.SendSms("msg", PhoneNumbers{PhoneNumber("0601020304")})
 
 	require.Contains(t, err.Error(), "unable to confirm message sending")
+}
+
+func TestSmsSender_SendSms_cannot_read_final_quota(t *testing.T) {
+	client := &FakeClient{
+		bodies: []string{">Validation< ... >3 SMS gratuits", "Votre message a bien été envoyé. NO QUOTA string"},
+		errors: []error{nil, nil},
+	}
+	sender := smsSender{client, NewFakeQuotaGetter(99, nil)}
+
+	_, err := sender.SendSms("msg", PhoneNumbers{PhoneNumber("0601020304")})
+
+	require.Contains(t, err.Error(), "unable to read SMS left")
 }

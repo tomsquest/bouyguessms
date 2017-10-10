@@ -23,12 +23,12 @@ func (sender *smsSender) SendSms(msg Msg, phoneNumbers PhoneNumbers) (Quota, err
 		return ExceededQuota, err
 	}
 
-	quota, err := sender.composeMessage(msg, phoneNumbers)
+	err = sender.composeMessage(msg, phoneNumbers)
 	if err != nil {
-		return quota, err
+		return ExceededQuota, err
 	}
 
-	return quota, sender.confirmMessage()
+	return sender.confirmMessage()
 }
 
 func (sender *smsSender) checkSmsLeft(phonenumbers PhoneNumbers) error {
@@ -48,7 +48,7 @@ func (sender *smsSender) checkSmsLeft(phonenumbers PhoneNumbers) error {
 	return err
 }
 
-func (sender *smsSender) composeMessage(msg Msg, phoneNumbers PhoneNumbers) (Quota, error) {
+func (sender *smsSender) composeMessage(msg Msg, phoneNumbers PhoneNumbers) error {
 	msgForm := make(url.Values)
 	msgForm.Add("fieldMsisdn", phoneNumbers.String())
 	msgForm.Add("fieldMessage", msg.String())
@@ -58,17 +58,30 @@ func (sender *smsSender) composeMessage(msg Msg, phoneNumbers PhoneNumbers) (Quo
 	sendMessageUrl := "https://www.secure.bbox.bouyguestelecom.fr/services/SMSIHD/confirmSendSMS.phtml"
 	body, err := sender.client.PostForm(sendMessageUrl, msgForm)
 	if err != nil {
-		return ExceededQuota, errors.Wrap(err, "unable to compose sms")
+		return errors.Wrap(err, "unable to compose sms")
 	}
 
 	if !strings.Contains(body, ">Validation<") {
-		return ExceededQuota, errors.Errorf("validation of message failed. Body: %s", body)
+		return errors.Errorf("validation of message failed. Body: %s", body)
 	}
 
-	regex := regexp.MustCompile(">(\\d*) SMS gratuit")
+	return nil
+}
+
+func (sender *smsSender) confirmMessage() (Quota, error) {
+	body, err := sender.client.Get("https://www.secure.bbox.bouyguestelecom.fr/services/SMSIHD/resultSendSMS.phtml")
+	if err != nil {
+		return ExceededQuota, err
+	}
+
+	if !strings.Contains(body, "Votre message a bien été envoyé") {
+		return ExceededQuota, errors.Errorf("unable to confirm message sending (last step results in unattended message). Body: %s", body)
+	}
+
+	regex := regexp.MustCompile("(\\d*) messages gratuits")
 	matches := regex.FindStringSubmatch(body)
 	if len(matches) < 2 {
-		return ExceededQuota, errors.New("unable to read SMS left")
+		return ExceededQuota, errors.Errorf("unable to read SMS left. Body: %s", body)
 	}
 
 	quota, err := strconv.Atoi(matches[1])
@@ -77,17 +90,4 @@ func (sender *smsSender) composeMessage(msg Msg, phoneNumbers PhoneNumbers) (Quo
 	}
 
 	return Quota(quota), nil
-}
-
-func (sender *smsSender) confirmMessage() error {
-	body, err := sender.client.Get("https://www.secure.bbox.bouyguestelecom.fr/services/SMSIHD/resultSendSMS.phtml")
-	if err != nil {
-		return err
-	}
-
-	if !strings.Contains(body, "Votre message a bien été envoyé") {
-		return errors.Errorf("unable to confirm message sending (last step results in unattented message). Body: %s", body)
-	}
-
-	return nil
 }
