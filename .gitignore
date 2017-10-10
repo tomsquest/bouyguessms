@@ -4,6 +4,7 @@
 *.so
 *.dylib
 /bouyguessms
+dist/
 
 # Test binary, build with `go test -c`
 *.test
