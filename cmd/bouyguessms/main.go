@@ -26,5 +26,5 @@ func main() {
 		fmt.Printf("Unable to send SMS: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("SMS sent successfully at %s. Quota left: %d.\n", time.Now(), quota)
+	fmt.Printf("SMS sent successfully at %s. Quota left: %d.\n", time.Now().Format(time.RFC3339), quota)
 }
