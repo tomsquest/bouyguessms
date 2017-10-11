@@ -9,16 +9,16 @@ import (
 	"net/url"
 )
 
-type HttpClient interface {
+type httpClient interface {
 	Get(string) (string, error)
 	PostForm(string, url.Values) (string, error)
 }
 
-type httpClient struct {
+type defaultHttpClient struct {
 	client *http.Client
 }
 
-func NewHttpClient() (*httpClient, error) {
+func newHttpClient() (*defaultHttpClient, error) {
 	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 	if err != nil {
 		return nil, err
@@ -28,10 +28,10 @@ func NewHttpClient() (*httpClient, error) {
 		Jar: jar,
 	}
 
-	return &httpClient{client}, nil
+	return &defaultHttpClient{client}, nil
 }
 
-func (c *httpClient) Get(url string) (string, error) {
+func (c *defaultHttpClient) Get(url string) (string, error) {
 	res, err := c.client.Get(url)
 	if err != nil {
 		return "", nil
@@ -40,7 +40,7 @@ func (c *httpClient) Get(url string) (string, error) {
 	return handleResponse(res)
 }
 
-func (c *httpClient) PostForm(url string, data url.Values) (string, error) {
+func (c *defaultHttpClient) PostForm(url string, data url.Values) (string, error) {
 	res, err := c.client.PostForm(url, data)
 	if err != nil {
 		return "", nil

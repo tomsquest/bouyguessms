@@ -11,7 +11,7 @@ type QuotaGetter interface {
 }
 
 type quotaGetter struct {
-	client HttpClient
+	client httpClient
 }
 
 func (getter *quotaGetter) Get() (Quota, error) {

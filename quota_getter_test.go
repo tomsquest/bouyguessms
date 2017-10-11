@@ -8,7 +8,7 @@ import (
 
 func TestQuotaGetter_Get_ok(t *testing.T) {
 	getter := quotaGetter{
-		NewFakeClient("Il vous reste <strong>1 SMS gratuits", nil),
+		newFakeClient("Il vous reste <strong>1 SMS gratuits", nil),
 	}
 
 	quota, err := getter.Get()
@@ -19,7 +19,7 @@ func TestQuotaGetter_Get_ok(t *testing.T) {
 
 func TestQuotaGetter_Get_client_error(t *testing.T) {
 	getter := quotaGetter{
-		NewFakeClient("some error", errors.New("an error")),
+		newFakeClient("some error", errors.New("an error")),
 	}
 
 	quota, err := getter.Get()
@@ -30,7 +30,7 @@ func TestQuotaGetter_Get_client_error(t *testing.T) {
 
 func TestQuotaGetter_Get_pattern_not_found(t *testing.T) {
 	getter := quotaGetter{
-		NewFakeClient("not quota pattern", nil),
+		newFakeClient("not quota pattern", nil),
 	}
 
 	quota, err := getter.Get()

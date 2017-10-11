@@ -14,7 +14,7 @@ type SmsSender interface {
 }
 
 type smsSender struct {
-	client      HttpClient
+	client      httpClient
 	quotaGetter QuotaGetter
 }
 

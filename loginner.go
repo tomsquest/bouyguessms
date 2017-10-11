@@ -12,7 +12,7 @@ type Loginner interface {
 }
 
 type loginner struct {
-	client HttpClient
+	client httpClient
 }
 
 func (l *loginner) Login(login, pass string) error {
