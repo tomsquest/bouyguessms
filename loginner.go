@@ -67,7 +67,7 @@ func (l *defaultLoginner) extractLT(body string) (string, error) {
 }
 
 func (l *defaultLoginner) postLogin(login, pass string, tokens *tokens) error {
-	loginUrl := "https://www.mon-compte.bouyguestelecom.fr/cas/login;jsessionid=" + tokens.jsessionid + "?service=https%3A%2F%2Fwww.secure.bbox.bouyguestelecom.fr%2Fservices%2FSMSIHD%2FsendSMS.phtml"
+	loginURL := "https://www.mon-compte.bouyguestelecom.fr/cas/login;jsessionid=" + tokens.jsessionid + "?service=https%3A%2F%2Fwww.secure.bbox.bouyguestelecom.fr%2Fservices%2FSMSIHD%2FsendSMS.phtml"
 
 	data := make(url.Values)
 	data.Add("username", login)
@@ -78,7 +78,7 @@ func (l *defaultLoginner) postLogin(login, pass string, tokens *tokens) error {
 	data.Add("execution", "e1s1")
 	data.Add("_eventId", "submit")
 
-	body, err := l.client.PostForm(loginUrl, data)
+	body, err := l.client.PostForm(loginURL, data)
 	if err != nil {
 		return err
 	}
