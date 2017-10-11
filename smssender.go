@@ -2,6 +2,7 @@ package bouyguessms
 
 import (
 	"github.com/pkg/errors"
+	"log"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -32,6 +33,7 @@ func (sender *smsSender) SendSms(msg Msg, phoneNumbers PhoneNumbers) (Quota, err
 }
 
 func (sender *smsSender) checkSmsLeft(phonenumbers PhoneNumbers) error {
+	log.Println("Checking quota left...")
 	quota, err := sender.quotaGetter.Get()
 	if err != nil {
 		return err
@@ -45,10 +47,13 @@ func (sender *smsSender) checkSmsLeft(phonenumbers PhoneNumbers) error {
 		return errors.Errorf("too many phone numbers compared to quota left (%d phone numbers, %d SMS left)", len(phonenumbers), quota)
 	}
 
+	log.Printf("Quota left before sending: %d\n", quota)
 	return err
 }
 
 func (sender *smsSender) composeMessage(msg Msg, phoneNumbers PhoneNumbers) error {
+	log.Printf("Composing message to %s\n", phoneNumbers)
+
 	msgForm := make(url.Values)
 	msgForm.Add("fieldMsisdn", phoneNumbers.String())
 	msgForm.Add("fieldMessage", msg.String())
@@ -65,10 +70,12 @@ func (sender *smsSender) composeMessage(msg Msg, phoneNumbers PhoneNumbers) erro
 		return errors.Errorf("validation of message failed. Body: %s", body)
 	}
 
+	log.Println("Message composed")
 	return nil
 }
 
 func (sender *smsSender) confirmMessage() (Quota, error) {
+	log.Println("Confirming message...")
 	body, err := sender.client.Get("https://www.secure.bbox.bouyguestelecom.fr/services/SMSIHD/resultSendSMS.phtml")
 	if err != nil {
 		return ExceededQuota, err
@@ -89,5 +96,6 @@ func (sender *smsSender) confirmMessage() (Quota, error) {
 		return ExceededQuota, errors.Wrap(err, "unable to convert quota to int")
 	}
 
+	log.Printf("Message confirmed. Quota left after sending: %d", quota)
 	return Quota(quota), nil
 }
