@@ -18,7 +18,7 @@ type smsSender struct {
 	quotaGetter QuotaGetter
 }
 
-func (sender *smsSender) SendSms(msg Msg, phoneNumbers PhoneNumbers) (Quota, error) {
+func (sender *smsSender) SendSms(msg message, phoneNumbers PhoneNumbers) (Quota, error) {
 	err := sender.checkSmsLeft(phoneNumbers)
 	if err != nil {
 		return ExceededQuota, err
@@ -51,7 +51,7 @@ func (sender *smsSender) checkSmsLeft(phonenumbers PhoneNumbers) error {
 	return err
 }
 
-func (sender *smsSender) composeMessage(msg Msg, phoneNumbers PhoneNumbers) error {
+func (sender *smsSender) composeMessage(msg message, phoneNumbers PhoneNumbers) error {
 	log.Printf("Composing message to %s\n", phoneNumbers)
 
 	msgForm := make(url.Values)

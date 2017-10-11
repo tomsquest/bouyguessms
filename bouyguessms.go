@@ -36,5 +36,5 @@ func SendSms(login, pass string, msg string, to string) (Quota, error) {
 	}
 
 	smsSender := &smsSender{client, &quotaGetter{client}}
-	return smsSender.SendSms(Msg(msg), phoneNumbers)
+	return smsSender.SendSms(message(msg), phoneNumbers)
 }
