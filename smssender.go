@@ -85,7 +85,7 @@ func (sender *smsSender) confirmMessage() (Quota, error) {
 		return ExceededQuota, errors.Errorf("unable to confirm message sending (last step results in unattended message). Body: %s", body)
 	}
 
-	regex := regexp.MustCompile("(\\d*) messages gratuits")
+	regex := regexp.MustCompile("(\\d*) message(s)? gratuit(s)?")
 	matches := regex.FindStringSubmatch(body)
 	if len(matches) < 2 {
 		return ExceededQuota, errors.Errorf("unable to read SMS left. Body: %s", body)

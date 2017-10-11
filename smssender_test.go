@@ -77,6 +77,19 @@ func TestSmsSender_SendSms_no_validation_msg(t *testing.T) {
 	require.Contains(t, err.Error(), "validation of message failed. Body: something else")
 }
 
+func TestSmsSender_SendSms_confirm_noSmsLeftAfter(t *testing.T) {
+	client := &FakeClient{
+		bodies: []string{">Validation< ... >1 SMS gratuits", "Votre message a bien été envoyé. 0 message gratuit"},
+		errors: []error{nil, nil},
+	}
+	sender := smsSender{client, NewFakeQuotaGetter(99, nil)}
+
+	quota, err := sender.SendSms("msg", PhoneNumbers{PhoneNumber("0601020304")})
+
+	require.NoError(t, err)
+	require.EqualValues(t, 0, quota)
+}
+
 func TestSmsSender_SendSms_error_during_confirmation(t *testing.T) {
 	client := &FakeClient{
 		bodies: []string{">Validation< ... >3 SMS gratuits", "ignore"},
