@@ -9,7 +9,7 @@ func GetQuota(login, pass string) (Quota, error) {
 		return ExceededQuota, errors.Wrap(err, "unable to create httpClient")
 	}
 
-	loginner := loginner{client}
+	loginner := defaultLoginner{client}
 	if err = loginner.Login(login, pass); err != nil {
 		return ExceededQuota, errors.Wrap(err, "unable to login")
 	}
@@ -25,7 +25,7 @@ func SendSms(login, pass string, msg string, to string) (Quota, error) {
 		return ExceededQuota, errors.Wrap(err, "unable to create httpClient")
 	}
 
-	loginner := loginner{client}
+	loginner := defaultLoginner{client}
 	if err = loginner.Login(login, pass); err != nil {
 		return ExceededQuota, errors.Wrap(err, "unable to login")
 	}
