@@ -14,7 +14,7 @@ func GetQuota(login, pass string) (Quota, error) {
 		return ExceededQuota, errors.Wrap(err, "unable to login")
 	}
 
-	quotaGetter := &quotaGetter{client}
+	quotaGetter := &httpQuotaGetter{client}
 	return quotaGetter.Get()
 }
 
@@ -35,6 +35,6 @@ func SendSms(login, pass string, msg string, to string) (Quota, error) {
 		return ExceededQuota, errors.Wrap(err, "unable to parse `to` field")
 	}
 
-	smsSender := &smsSender{client, &quotaGetter{client}}
+	smsSender := &smsSender{client, &httpQuotaGetter{client}}
 	return smsSender.SendSms(message(msg), phoneNumbers)
 }

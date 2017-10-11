@@ -6,15 +6,15 @@ import (
 	"strconv"
 )
 
-type QuotaGetter interface {
+type quotaGetter interface {
 	Get() (Quota, error)
 }
 
-type quotaGetter struct {
+type httpQuotaGetter struct {
 	client httpClient
 }
 
-func (getter *quotaGetter) Get() (Quota, error) {
+func (getter *httpQuotaGetter) Get() (Quota, error) {
 	body, err := getter.client.Get("https://www.secure.bbox.bouyguestelecom.fr/services/SMSIHD/sendSMS.phtml")
 	if err != nil {
 		return ExceededQuota, err

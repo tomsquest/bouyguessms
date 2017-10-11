@@ -5,7 +5,7 @@ type fakeQuotaGetter struct {
 	err   error
 }
 
-func NewFakeQuotaGetter(quota int, err error) *fakeQuotaGetter {
+func newFakeQuotaGetter(quota int, err error) *fakeQuotaGetter {
 	return &fakeQuotaGetter{Quota(quota), err}
 }
 

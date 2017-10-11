@@ -15,7 +15,7 @@ type SmsSender interface {
 
 type smsSender struct {
 	client      httpClient
-	quotaGetter QuotaGetter
+	quotaGetter quotaGetter
 }
 
 func (sender *smsSender) SendSms(msg message, phoneNumbers phoneNumbers) (Quota, error) {
