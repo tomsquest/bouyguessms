@@ -6,24 +6,24 @@ import (
 	"strings"
 )
 
-type PhoneNumber string
+type phoneNumber string
 
-func (phone PhoneNumber) isValid() bool {
+func (phone phoneNumber) isValid() bool {
 	regex := regexp.MustCompile("^0[67]\\d{8}$")
 	return regex.MatchString(string(phone))
 }
 
-type PhoneNumbers []PhoneNumber
+type phoneNumbers []phoneNumber
 
-func ParsePhones(raw string) (PhoneNumbers, error) {
+func parsePhones(raw string) (phoneNumbers, error) {
 	rawPhones := strings.Split(raw, ";")
 	if len(rawPhones) > 5 {
 		return nil, errors.New("too many phone numbers given (5 is the max)")
 	}
 
-	phones := []PhoneNumber{}
+	phones := []phoneNumber{}
 	for _, rawPhone := range rawPhones {
-		phoneNumber := PhoneNumber(strings.TrimSpace(rawPhone))
+		phoneNumber := phoneNumber(strings.TrimSpace(rawPhone))
 		if !phoneNumber.isValid() {
 			return nil, errors.Errorf("invalid phone number %s", phoneNumber)
 		}
@@ -33,7 +33,7 @@ func ParsePhones(raw string) (PhoneNumbers, error) {
 	return phones, nil
 }
 
-func (phones PhoneNumbers) String() string {
+func (phones phoneNumbers) String() string {
 	strs := []string{}
 	for _, phone := range phones {
 		strs = append(strs, string(phone))

@@ -30,7 +30,7 @@ func SendSms(login, pass string, msg string, to string) (Quota, error) {
 		return ExceededQuota, errors.Wrap(err, "unable to login")
 	}
 
-	phoneNumbers, err := ParsePhones(to)
+	phoneNumbers, err := parsePhones(to)
 	if err != nil {
 		return ExceededQuota, errors.Wrap(err, "unable to parse `to` field")
 	}
