@@ -4,7 +4,7 @@ import "github.com/pkg/errors"
 
 // GetQuota fetches the remaining number of SMS Left
 func GetQuota(login, pass string) (Quota, error) {
-	client, err := newHttpClient()
+	client, err := newHTTPClient()
 	if err != nil {
 		return ExceededQuota, errors.Wrap(err, "unable to create httpClient")
 	}
@@ -20,7 +20,7 @@ func GetQuota(login, pass string) (Quota, error) {
 
 // SendSms sends msg to the specified recipients
 func SendSms(login, pass string, msg string, to string) (Quota, error) {
-	client, err := newHttpClient()
+	client, err := newHTTPClient()
 	if err != nil {
 		return ExceededQuota, errors.Wrap(err, "unable to create httpClient")
 	}
