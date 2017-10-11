@@ -9,16 +9,16 @@ import (
 	"strings"
 )
 
-type SmsSender interface {
+type smsSender interface {
 	SendSms(msg string, to string) error
 }
 
-type smsSender struct {
+type httpSmsSender struct {
 	client      httpClient
 	quotaGetter quotaGetter
 }
 
-func (sender *smsSender) SendSms(msg message, phoneNumbers phoneNumbers) (Quota, error) {
+func (sender *httpSmsSender) SendSms(msg message, phoneNumbers phoneNumbers) (Quota, error) {
 	err := sender.checkSmsLeft(phoneNumbers)
 	if err != nil {
 		return ExceededQuota, err
@@ -32,7 +32,7 @@ func (sender *smsSender) SendSms(msg message, phoneNumbers phoneNumbers) (Quota,
 	return sender.confirmMessage()
 }
 
-func (sender *smsSender) checkSmsLeft(phonenumbers phoneNumbers) error {
+func (sender *httpSmsSender) checkSmsLeft(phonenumbers phoneNumbers) error {
 	log.Println("Checking quota left...")
 	quota, err := sender.quotaGetter.Get()
 	if err != nil {
@@ -51,7 +51,7 @@ func (sender *smsSender) checkSmsLeft(phonenumbers phoneNumbers) error {
 	return err
 }
 
-func (sender *smsSender) composeMessage(msg message, phoneNumbers phoneNumbers) error {
+func (sender *httpSmsSender) composeMessage(msg message, phoneNumbers phoneNumbers) error {
 	log.Printf("Composing message to %s\n", phoneNumbers)
 
 	msgForm := make(url.Values)
@@ -60,8 +60,8 @@ func (sender *smsSender) composeMessage(msg message, phoneNumbers phoneNumbers) 
 	msgForm.Add("Verif.x", "51")
 	msgForm.Add("Verif.y", "16")
 
-	sendMessageUrl := "https://www.secure.bbox.bouyguestelecom.fr/services/SMSIHD/confirmSendSMS.phtml"
-	body, err := sender.client.PostForm(sendMessageUrl, msgForm)
+	sendMessageURL := "https://www.secure.bbox.bouyguestelecom.fr/services/SMSIHD/confirmSendSMS.phtml"
+	body, err := sender.client.PostForm(sendMessageURL, msgForm)
 	if err != nil {
 		return errors.Wrap(err, "unable to compose sms")
 	}
@@ -74,7 +74,7 @@ func (sender *smsSender) composeMessage(msg message, phoneNumbers phoneNumbers) 
 	return nil
 }
 
-func (sender *smsSender) confirmMessage() (Quota, error) {
+func (sender *httpSmsSender) confirmMessage() (Quota, error) {
 	log.Println("Confirming message...")
 	body, err := sender.client.Get("https://www.secure.bbox.bouyguestelecom.fr/services/SMSIHD/resultSendSMS.phtml")
 	if err != nil {

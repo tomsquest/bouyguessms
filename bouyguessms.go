@@ -35,6 +35,6 @@ func SendSms(login, pass string, msg string, to string) (Quota, error) {
 		return ExceededQuota, errors.Wrap(err, "unable to parse `to` field")
 	}
 
-	smsSender := &smsSender{client, &httpQuotaGetter{client}}
+	smsSender := &httpSmsSender{client, &httpQuotaGetter{client}}
 	return smsSender.SendSms(message(msg), phoneNumbers)
 }
