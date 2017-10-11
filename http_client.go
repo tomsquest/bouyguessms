@@ -49,16 +49,21 @@ func (c *defaultHTTPClient) PostForm(url string, data url.Values) (string, error
 	return handleResponse(res)
 }
 
-func handleResponse(res *http.Response) (string, error) {
+func handleResponse(res *http.Response) (body string, err error) {
 	if res.StatusCode != http.StatusOK {
-		return "", errors.New(res.Status)
+		return body, errors.New(res.Status)
 	}
 
 	bodyData, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
+	defer func() {
+		if cerr := res.Body.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
+
 	if err != nil {
-		return "", err
+		return body, err
 	}
 
-	return string(bodyData), nil
+	return string(bodyData), err
 }
