@@ -21,10 +21,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	quota, err := bouyguessms.SendSms(*login, *pass, *msg, *to)
+	smsLeft, err := bouyguessms.SendSms(*login, *pass, *msg, *to)
 	if err != nil {
 		fmt.Printf("Unable to send SMS: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("SMS sent successfully at %s. Quota left: %d.\n", time.Now().Format(time.RFC3339), quota)
+	fmt.Printf("SMS sent successfully at %s. SMS left: %d.\n", time.Now().Format(time.RFC3339), smsLeft)
 }

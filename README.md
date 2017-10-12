@@ -16,7 +16,7 @@ $ bouyguessms \
     -pass  "yourPassword" \
     -to "0601010101,0602020202" \
     -msg "Hello World!"
-SMS sent successfully at 2017-10-12T07:10:39+02:00. Quota left: 4.
+SMS sent successfully at 2017-10-12T07:10:39+02:00. SMS left: 4.
 ```
 
 As a library in your GO program:
@@ -24,13 +24,13 @@ As a library in your GO program:
 ```go
 import "github.com/tomsquest/bouyguessms"
 
-quota, err := SendSms("yourEmail@domain.com", "yourPassword",
+smsLeft, err := SendSms("yourEmail@domain.com", "yourPassword",
     "Hello Gophers, it's "+time.Now().String(),
     "0601010101")
 if err != nil {
     log.Fatalln("error sending sms", err)
 }
-log.Printf("SMS sent. Quota left: %d.\n", quota)
+log.Printf("SMS sent. SMS left: %d.\n", smsLeft)
 ```
 
 ## Download/Release

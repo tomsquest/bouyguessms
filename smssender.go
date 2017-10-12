@@ -14,40 +14,40 @@ type smsSender interface {
 }
 
 type httpSmsSender struct {
-	client      httpClient
-	quotaGetter quotaGetter
+	client        httpClient
+	smsLeftGetter smsLeftGetter
 }
 
-func (sender *httpSmsSender) SendSms(msg message, phoneNumbers phoneNumbers) (Quota, error) {
+func (sender *httpSmsSender) SendSms(msg message, phoneNumbers phoneNumbers) (SmsLeft, error) {
 	err := sender.checkSmsLeft(phoneNumbers)
 	if err != nil {
-		return ExceededQuota, err
+		return NoSmsLeft, err
 	}
 
 	err = sender.composeMessage(msg, phoneNumbers)
 	if err != nil {
-		return ExceededQuota, err
+		return NoSmsLeft, err
 	}
 
 	return sender.confirmMessage()
 }
 
 func (sender *httpSmsSender) checkSmsLeft(phonenumbers phoneNumbers) error {
-	log.Println("Checking quota left...")
-	quota, err := sender.quotaGetter.Get()
+	log.Println("Checking SMS left...")
+	smsLeft, err := sender.smsLeftGetter.Get()
 	if err != nil {
 		return err
 	}
 
-	if quota.IsExceeded() {
-		return errors.New("quota exceeded")
+	if smsLeft.IsExceeded() {
+		return errors.New("No SMS left")
 	}
 
-	if quota.Remaining() < len(phonenumbers) {
-		return errors.Errorf("too many phone numbers compared to quota left (%d phone numbers, %d SMS left)", len(phonenumbers), quota)
+	if smsLeft.Remaining() < len(phonenumbers) {
+		return errors.Errorf("too many phone numbers compared to SMS left (%d phone numbers, %d SMS left)", len(phonenumbers), smsLeft)
 	}
 
-	log.Printf("Quota left before sending: %d\n", quota)
+	log.Printf("SMS left before sending: %d\n", smsLeft)
 	return err
 }
 
@@ -74,28 +74,28 @@ func (sender *httpSmsSender) composeMessage(msg message, phoneNumbers phoneNumbe
 	return nil
 }
 
-func (sender *httpSmsSender) confirmMessage() (Quota, error) {
+func (sender *httpSmsSender) confirmMessage() (SmsLeft, error) {
 	log.Println("Confirming message...")
 	body, err := sender.client.Get("https://www.secure.bbox.bouyguestelecom.fr/services/SMSIHD/resultSendSMS.phtml")
 	if err != nil {
-		return ExceededQuota, err
+		return NoSmsLeft, err
 	}
 
 	if !strings.Contains(body, "Votre message a bien été envoyé") {
-		return ExceededQuota, errors.Errorf("unable to confirm message sending (last step results in unattended message). Body: %s", body)
+		return NoSmsLeft, errors.Errorf("unable to confirm message sending (last step results in unattended message). Body: %s", body)
 	}
 
 	regex := regexp.MustCompile("(\\d*) message(s)? gratuit(s)?")
 	matches := regex.FindStringSubmatch(body)
 	if len(matches) < 2 {
-		return ExceededQuota, errors.Errorf("unable to read SMS left. Body: %s", body)
+		return NoSmsLeft, errors.Errorf("unable to read SMS left. Body: %s", body)
 	}
 
-	quota, err := strconv.Atoi(matches[1])
+	smsLeft, err := strconv.Atoi(matches[1])
 	if err != nil {
-		return ExceededQuota, errors.Wrap(err, "unable to convert quota to int")
+		return NoSmsLeft, errors.Wrapf(err, "unable to convert %v to int", matches[1])
 	}
 
-	log.Printf("Message confirmed. Quota left after sending: %d", quota)
-	return Quota(quota), nil
+	log.Printf("Message confirmed. SMS left after sending: %d", smsLeft)
+	return SmsLeft(smsLeft), nil
 }
