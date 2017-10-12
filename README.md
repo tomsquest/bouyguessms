@@ -16,7 +16,7 @@ $ bouyguessms \
     -pass  "yourPassword" \
     -to "0601010101,0602020202" \
     -msg "Hello World!"
-SMS sent successfully at 2017-10-02 07:43:09.051154206 +0200 CEST. Quota left: 4.
+SMS sent successfully at 2017-10-12T07:10:39+02:00. Quota left: 4.
 ```
 
 As a library in your GO program:
