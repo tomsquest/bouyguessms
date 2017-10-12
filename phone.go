@@ -23,11 +23,11 @@ func parsePhones(raw string) (phoneNumbers, error) {
 
 	phones := []phoneNumber{}
 	for _, rawPhone := range rawPhones {
-		phoneNumber := phoneNumber(strings.TrimSpace(rawPhone))
-		if !phoneNumber.isValid() {
-			return nil, errors.Errorf("invalid phone number %s", phoneNumber)
+		phone := phoneNumber(strings.TrimSpace(rawPhone))
+		if !phone.isValid() {
+			return nil, errors.Errorf("invalid phone number %s", phone)
 		}
-		phones = append(phones, phoneNumber)
+		phones = append(phones, phone)
 	}
 
 	return phones, nil
