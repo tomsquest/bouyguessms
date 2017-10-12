@@ -43,7 +43,7 @@ func (sender *httpSmsSender) checkSmsLeft(phonenumbers phoneNumbers) error {
 		return errors.New("No SMS left")
 	}
 
-	if smsLeft.Remaining() < len(phonenumbers) {
+	if int(smsLeft) < len(phonenumbers) {
 		return errors.Errorf("too many phone numbers compared to SMS left (%d phone numbers, %d SMS left)", len(phonenumbers), smsLeft)
 	}
 

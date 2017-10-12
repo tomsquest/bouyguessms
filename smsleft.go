@@ -10,8 +10,3 @@ const NoSmsLeft = SmsLeft(0)
 func (smsLeft SmsLeft) IsExceeded() bool {
 	return int(smsLeft) <= 0
 }
-
-// Remaining returns the amount of remaining SMS as an integer
-func (smsLeft SmsLeft) Remaining() int {
-	return int(smsLeft)
-}
