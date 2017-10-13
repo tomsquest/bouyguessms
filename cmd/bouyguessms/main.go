@@ -8,6 +8,11 @@ import (
 	"time"
 )
 
+// Filled by goreleaser
+var version = "master"
+var commit = "HEAD"
+var date = "now"
+
 func main() {
 	login := flag.String("login", "", "Your Bouygues Telecom `login`")
 	pass := flag.String("pass", "", "Your Bouygues Telecom `password`")
@@ -16,8 +21,9 @@ func main() {
 	flag.Parse()
 
 	if *login == "" || *pass == "" || *msg == "" || *to == "" {
-		fmt.Println("Error: login, password, message and to are required")
+		fmt.Fprintf(os.Stderr, "Error: login, password, message and to are required\n\n")
 		flag.Usage()
+		fmt.Fprintf(os.Stderr, "Using %s %s %s %s\n\n", os.Args[0], version, commit, date)
 		os.Exit(1)
 	}
 
