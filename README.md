@@ -1,6 +1,9 @@
 # Bouygues SMS
 
 [![Build Status](https://travis-ci.org/tomsquest/bouyguessms.svg?branch=master)](https://travis-ci.org/tomsquest/bouyguessms)
+[![GitHub release](https://img.shields.io/github/release/tomsquest/bouyguessms.svg)]()
+[![GitHub Release Date](https://img.shields.io/github/release-date/tomsquest/bouyguessms.svg)]()
+[![GoDoc](https://godoc.org/github.com/tomsquest/bouyguessms?status.svg)](https://godoc.org/github.com/tomsquest/bouyguessms)
 
 Send up to 5 free SMS per day using Bouygues Telecom unofficial API.  
 The program is released as a standalone binary and it can also be used as a GO library.  
