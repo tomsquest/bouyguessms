@@ -6,7 +6,7 @@
 [![GoDoc](https://godoc.org/github.com/tomsquest/bouyguessms?status.svg)](https://godoc.org/github.com/tomsquest/bouyguessms)
 
 Send up to 5 free SMS per day using Bouygues Telecom unofficial API.  
-The program is released as a standalone binary and it can also be used as a GO library.  
+The program is released as a standalone binary and it can also be used as a GO library or as a Docker image.  
 The code is written in Golang.  
 
 ## Usage
@@ -18,7 +18,7 @@ $ bouyguessms \
     -login "yourEmail@domain.com" \
     -pass  "yourPassword" \
     -to "0601010101,0602020202" \
-    -msg "Hello World!"
+    -msg "Hello World"
 SMS sent successfully at 2017-10-12T07:10:39+02:00. SMS left: 4.
 ```
 
@@ -34,6 +34,17 @@ if err != nil {
     log.Fatalln("error sending sms", err)
 }
 log.Printf("SMS sent. SMS left: %d.\n", smsLeft)
+```
+
+As a Docker image:
+
+```bash
+docker run -it --rm --read-only --init --security-opt="no-new-privileges:true" \
+  tomsquest/bouyguessms \
+  -login "yourEmail@domain.com" \
+  -pass  "yourPassword" \
+  -to "0601010101,0602020202" \
+  -msg "Hello World"
 ```
 
 ## Download/Release
