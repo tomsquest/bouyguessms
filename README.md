@@ -9,6 +9,12 @@ Send up to 5 free SMS per day using Bouygues Telecom unofficial API.
 The program is released as a standalone binary and it can also be used as a GO library or as a Docker image.  
 The code is written in Golang.  
 
+## CURRENT STATUS: BROKEN/NOT WORKING
+
+I am not more using Bouygues Telecom as my telco provider and @cyosp [reported that Bouygues may have changed something on their side](https://github.com/tomsquest/bouyguessms/issues/1).
+
+Try it by yourself and a PR would be very much appreciated.
+
 ## Usage
 
 Using from the command line:
